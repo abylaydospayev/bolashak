@@ -1,4 +1,4 @@
-"""
+﻿"""
 Position sizing strategies for risk management.
 
 Implements:
@@ -148,8 +148,8 @@ class PositionSizer:
             return self._fixed_fractional(equity, stop_loss_pips, pip_value)
         
         # Normalize volatility (assume average volatility = 1.0)
-        # Higher volatility → smaller position
-        # Lower volatility → larger position
+        # Higher volatility  smaller position
+        # Lower volatility  larger position
         volatility_adjustment = 1.0 / max(volatility, 0.5)
         volatility_adjustment = min(volatility_adjustment, 2.0)  # Cap at 2x
         
@@ -195,7 +195,7 @@ def test_position_sizer():
     print(f"Pip Value: {pip_value}\n")
     
     print(f"{'Strategy':<35} {'Position Size':<15} {'Risk $':<15} {'Risk %':<10}")
-    print("─"*75)
+    print(""*75)
     
     for name, sizer in strategies:
         if 'Kelly' in name:
@@ -226,9 +226,10 @@ def test_position_sizer():
     print(f"Fixed 1 lot: ${fixed_1_lot_risk:,.0f} risk ({fixed_1_lot_pct:.1f}% of equity)")
     print(f"\nPROBLEM: Risking {fixed_1_lot_pct:.1f}% per trade is WAY too high!")
     print(f"With 50 pip SL, one trade risks ${fixed_1_lot_risk:,.0f}")
-    print(f"\n✅ SOLUTION: Use 0.{int(equity * 0.01 / (stop_loss_pips * 100000) * 100):02d} lots (1% risk) = ${equity * 0.01:,.0f} risk")
+    print(f"\n SOLUTION: Use 0.{int(equity * 0.01 / (stop_loss_pips * 100000) * 100):02d} lots (1% risk) = ${equity * 0.01:,.0f} risk")
     print("="*60 + "\n")
 
 
 if __name__ == '__main__':
     test_position_sizer()
+

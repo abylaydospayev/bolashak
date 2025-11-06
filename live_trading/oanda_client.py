@@ -1,4 +1,4 @@
-"""
+﻿"""
 OANDA API client for live trading.
 
 Handles:
@@ -248,7 +248,7 @@ class OandaClient:
             response.raise_for_status()
             result = response.json()
             
-            print(f"✅ Order placed: {units} units of {instrument}")
+            print(f" Order placed: {units} units of {instrument}")
             if stop_loss:
                 print(f"   SL: {stop_loss}")
             if take_profit:
@@ -257,7 +257,7 @@ class OandaClient:
             return result
             
         except Exception as e:
-            print(f"❌ Error placing order: {e}")
+            print(f" Error placing order: {e}")
             if hasattr(e, 'response'):
                 print(f"   Response: {e.response.text}")
             return None
@@ -335,52 +335,52 @@ def test_connection():
     print("\n1. Getting account info...")
     account_info = client.get_account_info()
     if account_info:
-        print("   ✅ Account info retrieved")
+        print("    Account info retrieved")
     else:
-        print("   ❌ Failed to get account info")
+        print("    Failed to get account info")
         return False
     
     # Test 2: Account summary
     print("\n2. Getting account summary...")
     summary = client.get_account_summary()
     if summary:
-        print(f"   ✅ Balance: ${summary['balance']:,.2f}")
-        print(f"   ✅ Equity: ${summary['equity']:,.2f}")
-        print(f"   ✅ Open positions: {summary['open_positions']}")
+        print(f"    Balance: ${summary['balance']:,.2f}")
+        print(f"    Equity: ${summary['equity']:,.2f}")
+        print(f"    Open positions: {summary['open_positions']}")
     else:
-        print("   ❌ Failed to get account summary")
+        print("    Failed to get account summary")
         return False
     
     # Test 3: Get candles
     print("\n3. Getting USD_JPY candles...")
     df = client.get_candles('USD_JPY', granularity='M15', count=100)
     if df is not None and len(df) > 0:
-        print(f"   ✅ Retrieved {len(df)} candles")
+        print(f"    Retrieved {len(df)} candles")
         print(f"   Latest close: {df.iloc[-1]['close']:.3f}")
     else:
-        print("   ❌ Failed to get candles")
+        print("    Failed to get candles")
         return False
     
     # Test 4: Current price
     print("\n4. Getting current USD_JPY price...")
     price = client.get_current_price('USD_JPY')
     if price:
-        print(f"   ✅ Bid: {price['bid']:.3f}")
-        print(f"   ✅ Ask: {price['ask']:.3f}")
-        print(f"   ✅ Spread: {price['spread']:.5f} ({price['spread']*100:.2f} pips)")
+        print(f"    Bid: {price['bid']:.3f}")
+        print(f"    Ask: {price['ask']:.3f}")
+        print(f"    Spread: {price['spread']:.5f} ({price['spread']*100:.2f} pips)")
     else:
-        print("   ❌ Failed to get current price")
+        print("    Failed to get current price")
         return False
     
     # Test 5: Open positions
     print("\n5. Checking open positions...")
     positions = client.get_open_positions()
-    print(f"   ✅ Open positions: {len(positions)}")
+    print(f"    Open positions: {len(positions)}")
     for pos in positions:
         print(f"      {pos['instrument']}: {pos['units']} units, P&L: ${pos['unrealized_pl']:.2f}")
     
     print("\n" + "=" * 80)
-    print("✅ ALL TESTS PASSED - OANDA CONNECTION READY")
+    print(" ALL TESTS PASSED - OANDA CONNECTION READY")
     print("=" * 80)
     
     return True
@@ -388,3 +388,4 @@ def test_connection():
 
 if __name__ == '__main__':
     test_connection()
+

@@ -1,4 +1,4 @@
-"""
+﻿"""
 Real-time monitoring dashboard for demo bot.
 
 Shows:
@@ -45,7 +45,7 @@ def display_dashboard(account, positions, trades):
     print("=" * 80)
     
     # Account Info
-    print("\n📊 ACCOUNT STATUS")
+    print("\n ACCOUNT STATUS")
     print("-" * 80)
     if account:
         balance = account.balance
@@ -63,19 +63,19 @@ def display_dashboard(account, positions, trades):
         print("  Unable to fetch account info")
     
     # Open Positions
-    print("\n📈 OPEN POSITIONS")
+    print("\n OPEN POSITIONS")
     print("-" * 80)
     if positions and len(positions) > 0:
         for pos in positions:
             side = "BUY" if pos.type == 0 else "SELL"
-            pl_color = "✅" if pos.profit > 0 else "❌"
+            pl_color = "" if pos.profit > 0 else ""
             print(f"  {pl_color} {pos.symbol:<10} {side:<6} {pos.volume:>8.2f} lots @ {pos.price_open:>10.5f}")
             print(f"     Current: {pos.price_current:>10.5f}  |  P&L: ${pos.profit:>10.2f}  |  Ticket: {pos.ticket}")
     else:
         print("  No open positions")
     
     # Recent Trades
-    print("\n📜 RECENT TRADES (Last 10)")
+    print("\n RECENT TRADES (Last 10)")
     print("-" * 80)
     if trades and len(trades) > 0:
         wins = [t for t in trades if t.profit > 0]
@@ -87,7 +87,7 @@ def display_dashboard(account, positions, trades):
         
         for trade in trades[:10]:
             side = "BUY" if trade.type == 0 else "SELL"
-            result = "✅ WIN" if trade.profit > 0 else "❌ LOSS"
+            result = " WIN" if trade.profit > 0 else " LOSS"
             print(f"  {result} {trade.symbol:<10} {side:<6} {trade.volume:>8.2f} lots  |  P&L: ${trade.profit:>10.2f}")
             print(f"     Entry: {trade.price_open:>10.5f}  |  Exit: {trade.price_current:>10.5f}  |  {trade.time_update}")
             print()
@@ -103,10 +103,10 @@ def main():
     """Main monitoring loop."""
     print("Initializing MT5...")
     if not init_mt5(TERMINAL_PATH, LOGIN, PASSWORD, SERVER):
-        print("❌ Failed to initialize MT5")
+        print(" Failed to initialize MT5")
         return
     
-    print("✅ Connected to MT5")
+    print(" Connected to MT5")
     print("Starting monitor... (updates every 5 seconds)")
     time.sleep(2)
     
@@ -126,7 +126,7 @@ def main():
             time.sleep(5)
     
     except KeyboardInterrupt:
-        print("\n\n⏹️  Monitor stopped")
+        print("\n\n  Monitor stopped")
     
     finally:
         shutdown_mt5()
@@ -134,3 +134,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

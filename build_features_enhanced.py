@@ -1,4 +1,4 @@
-"""
+﻿"""
 Enhanced feature engineering with multi-timeframe analysis.
 
 Improvements:
@@ -406,7 +406,7 @@ def main():
     
     print("\n" + "=" * 60)
     print(f"SUCCESS: Saved enhanced features to {out_path}")
-    print(f"Final dataset: {len(df):,} rows × {len(df.columns)} columns")
+    print(f"Final dataset: {len(df):,} rows  {len(df.columns)} columns")
     print(f"Features: {len(df.columns) - 2} (excluding time, y)")
     print("=" * 60)
     
@@ -428,3 +428,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

@@ -1,4 +1,4 @@
-"""
+﻿"""
 Monte Carlo Simulation for USDJPY Ensemble Model
 Tests model robustness with random walk-forward validation
 """
@@ -118,7 +118,7 @@ def monte_carlo_simulation(X, y, model, n_simulations=100, test_size=0.2):
     """
     Run Monte Carlo simulation with random train/test splits
     """
-    print(f"\n🎲 Running {n_simulations} Monte Carlo simulations...")
+    print(f"\n Running {n_simulations} Monte Carlo simulations...")
     print(f"   Test size: {test_size*100:.0f}%")
     
     results = {
@@ -197,7 +197,7 @@ def plot_monte_carlo_results(results):
     
     plt.tight_layout()
     plt.savefig('results/USDJPY_monte_carlo.png', dpi=300, bbox_inches='tight')
-    print(f"\n✅ Saved plot: results/USDJPY_monte_carlo.png")
+    print(f"\n Saved plot: results/USDJPY_monte_carlo.png")
     
     return fig
 
@@ -228,17 +228,17 @@ def print_monte_carlo_summary(results):
 
 def main():
     print("\n" + "="*70)
-    print("🎲 USDJPY ENSEMBLE MODEL - MONTE CARLO ANALYSIS")
+    print(" USDJPY ENSEMBLE MODEL - MONTE CARLO ANALYSIS")
     print("="*70)
     
     # Load model
-    print("\n📦 Loading USDJPY ensemble model...")
+    print("\n Loading USDJPY ensemble model...")
     model_path = Path('models/USDJPY_ensemble_oos.pkl')
     model = joblib.load(model_path)
-    print(f"   ✅ Loaded: {model_path}")
+    print(f"    Loaded: {model_path}")
     
     # Load data
-    print("\n📊 Loading USDJPY data from CSV...")
+    print("\n Loading USDJPY data from CSV...")
     df_m15, df_m30, df_h1, df_h4 = load_usdjpy_data()
     print(f"   M15: {len(df_m15)} bars")
     print(f"   M30: {len(df_m30)} bars")
@@ -246,12 +246,12 @@ def main():
     print(f"   H4: {len(df_h4)} bars")
     
     # Build features
-    print("\n🔧 Building features...")
+    print("\n Building features...")
     df_features = build_usdjpy_features(df_m15, df_m30, df_h1, df_h4)
     print(f"   Created {len(df_features.columns)} features")
     
     # Create target
-    print("\n🎯 Creating target...")
+    print("\n Creating target...")
     df_features = create_target(df_features, forward_bars=5, threshold_pips=10)
     
     # Clean data
@@ -286,18 +286,19 @@ def main():
     print_monte_carlo_summary(results)
     
     # Plot results
-    print("\n📊 Generating plots...")
+    print("\n Generating plots...")
     Path('results').mkdir(exist_ok=True)
     plot_monte_carlo_results(results)
     
     # Save results
     results_df = pd.DataFrame(results)
     results_df.to_csv('results/USDJPY_monte_carlo_results.csv', index=False)
-    print(f"✅ Saved: results/USDJPY_monte_carlo_results.csv")
+    print(f" Saved: results/USDJPY_monte_carlo_results.csv")
     
     print("\n" + "="*70)
-    print("✅ MONTE CARLO ANALYSIS COMPLETE!")
+    print(" MONTE CARLO ANALYSIS COMPLETE!")
     print("="*70)
 
 if __name__ == "__main__":
     main()
+

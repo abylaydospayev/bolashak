@@ -1,4 +1,4 @@
-"""
+﻿"""
 USDJPY Trading Bot for Ubuntu/Linux using Oanda API
 Runs 24/7 without MT5 - optimized for Azure VM "Sabyr"
 """
@@ -66,9 +66,9 @@ class TradingBot:
         try:
             model_path = Path(__file__).parent.parent / 'models' / 'USDJPY_ensemble_oos.pkl'
             self.model = joblib.load(model_path)
-            logging.info(f"✅ Model loaded from {model_path}")
+            logging.info(f" Model loaded from {model_path}")
         except Exception as e:
-            logging.error(f"❌ Failed to load model: {e}")
+            logging.error(f" Failed to load model: {e}")
             raise
     
     def fetch_and_prepare_data(self):
@@ -103,11 +103,11 @@ class TradingBot:
                 logging.warning("No data after dropping NaN")
                 return None
             
-            logging.info(f"✅ Fetched and prepared {len(df_m15)} M15 bars with {len(df_m15.columns)} features")
+            logging.info(f" Fetched and prepared {len(df_m15)} M15 bars with {len(df_m15.columns)} features")
             return df_m15
             
         except Exception as e:
-            logging.error(f"❌ Error fetching/preparing data: {e}")
+            logging.error(f" Error fetching/preparing data: {e}")
             return None
     
     def get_prediction(self, df):
@@ -151,7 +151,7 @@ class TradingBot:
             }
             
         except Exception as e:
-            logging.error(f"❌ Prediction error: {e}")
+            logging.error(f" Prediction error: {e}")
             return None
     
     def calculate_position_size(self, account_balance, atr, stop_loss_pips):
@@ -176,7 +176,7 @@ class TradingBot:
             return lots
             
         except Exception as e:
-            logging.error(f"❌ Position size calculation error: {e}")
+            logging.error(f" Position size calculation error: {e}")
             return self.position_size_lots
     
     def check_risk_limits(self):
@@ -205,7 +205,7 @@ class TradingBot:
                 self.daily_start_balance = balance
                 self.daily_pnl = 0.0
                 self.last_day = current_day
-                logging.info(f"📅 New trading day started. Starting balance: ${balance:,.2f}")
+                logging.info(f" New trading day started. Starting balance: ${balance:,.2f}")
             
             # Calculate daily P&L
             self.daily_pnl = balance - self.daily_start_balance
@@ -213,19 +213,19 @@ class TradingBot:
             
             # Check daily loss limit
             if self.daily_pnl < -(self.daily_start_balance * self.max_daily_loss):
-                logging.warning(f"⚠️ Daily loss limit breached: {daily_pnl_pct:.2f}% (limit: {self.max_daily_loss*100:.1f}%)")
+                logging.warning(f" Daily loss limit breached: {daily_pnl_pct:.2f}% (limit: {self.max_daily_loss*100:.1f}%)")
                 return False
             
             # Check max drawdown
             drawdown = (self.peak_balance - balance) / self.peak_balance
             if drawdown > self.max_drawdown:
-                logging.warning(f"⚠️ Max drawdown breached: {drawdown*100:.2f}% (limit: {self.max_drawdown*100:.1f}%)")
+                logging.warning(f" Max drawdown breached: {drawdown*100:.2f}% (limit: {self.max_drawdown*100:.1f}%)")
                 return False
             
             return True
             
         except Exception as e:
-            logging.error(f"❌ Risk check error: {e}")
+            logging.error(f" Risk check error: {e}")
             return True  # Allow trading if check fails
     
     def run(self):
@@ -238,14 +238,14 @@ class TradingBot:
         
         # Initialize Oanda connection
         if not self.client.initialize():
-            logging.error("❌ Failed to connect to Oanda")
+            logging.error(" Failed to connect to Oanda")
             return
         
         # Get initial account info
         account = self.client.get_account_info()
         if account:
-            logging.info(f"💰 Account Balance: ${account['balance']:,.2f}")
-            logging.info(f"💎 Account Equity: ${account['equity']:,.2f}")
+            logging.info(f" Account Balance: ${account['balance']:,.2f}")
+            logging.info(f" Account Equity: ${account['equity']:,.2f}")
         
         self.running = True
         iteration = 0
@@ -256,20 +256,20 @@ class TradingBot:
                 
                 # Check risk limits
                 if not self.check_risk_limits():
-                    logging.warning("⚠️ Risk limits breached - stopping trading")
+                    logging.warning(" Risk limits breached - stopping trading")
                     break
                 
                 # Fetch and prepare data
                 df = self.fetch_and_prepare_data()
                 if df is None:
-                    logging.warning("⚠️ Failed to fetch data, retrying in 60s...")
+                    logging.warning(" Failed to fetch data, retrying in 60s...")
                     time.sleep(60)
                     continue
                 
                 # Get prediction
                 prediction = self.get_prediction(df)
                 if prediction is None:
-                    logging.warning("⚠️ Failed to get prediction, retrying in 60s...")
+                    logging.warning(" Failed to get prediction, retrying in 60s...")
                     time.sleep(60)
                     continue
                 
@@ -310,7 +310,7 @@ class TradingBot:
                             sl_price = current_price - (atr * self.stop_loss_atr_multiplier)
                             tp_price = current_price + (atr * self.take_profit_atr_multiplier)
                             
-                            logging.info(f"🚀 BUY SIGNAL: Prob={buy_prob:.3f}, Lots={lots}, SL={sl_price:.3f}, TP={tp_price:.3f}")
+                            logging.info(f" BUY SIGNAL: Prob={buy_prob:.3f}, Lots={lots}, SL={sl_price:.3f}, TP={tp_price:.3f}")
                             
                             # Place order
                             result = self.client.place_market_order(
@@ -323,9 +323,9 @@ class TradingBot:
                             )
                             
                             if result.get('success'):
-                                logging.info(f"✅ BUY order executed at {result.get('price', 0):.3f}")
+                                logging.info(f" BUY order executed at {result.get('price', 0):.3f}")
                             else:
-                                logging.error(f"❌ BUY order failed: {result.get('error')}")
+                                logging.error(f" BUY order failed: {result.get('error')}")
                     
                     # Enter short if low buy probability (high sell probability) and downtrend
                     elif buy_prob <= (1 - self.probability_threshold) and h1_trend < 0:
@@ -342,7 +342,7 @@ class TradingBot:
                             sl_price = current_price + (atr * self.stop_loss_atr_multiplier)
                             tp_price = current_price - (atr * self.take_profit_atr_multiplier)
                             
-                            logging.info(f"🔻 SELL SIGNAL: Prob={1-buy_prob:.3f}, Lots={lots}, SL={sl_price:.3f}, TP={tp_price:.3f}")
+                            logging.info(f" SELL SIGNAL: Prob={1-buy_prob:.3f}, Lots={lots}, SL={sl_price:.3f}, TP={tp_price:.3f}")
                             
                             # Place order
                             result = self.client.place_market_order(
@@ -355,22 +355,22 @@ class TradingBot:
                             )
                             
                             if result.get('success'):
-                                logging.info(f"✅ SELL order executed at {result.get('price', 0):.3f}")
+                                logging.info(f" SELL order executed at {result.get('price', 0):.3f}")
                             else:
-                                logging.error(f"❌ SELL order failed: {result.get('error')}")
+                                logging.error(f" SELL order failed: {result.get('error')}")
                 
                 # Show position status if any
                 if positions:
                     total_profit = sum(p['profit'] for p in positions)
-                    logging.info(f"📊 Open positions: {position_count} | Total P&L: ${total_profit:.2f}")
+                    logging.info(f" Open positions: {position_count} | Total P&L: ${total_profit:.2f}")
                 
                 # Sleep 60 seconds before next iteration
                 time.sleep(60)
                 
         except KeyboardInterrupt:
-            logging.info("🛑 Bot stopped by user (Ctrl+C)")
+            logging.info(" Bot stopped by user (Ctrl+C)")
         except Exception as e:
-            logging.error(f"❌ Unexpected error: {e}", exc_info=True)
+            logging.error(f" Unexpected error: {e}", exc_info=True)
         finally:
             # Cleanup
             self.client.shutdown()
@@ -382,3 +382,4 @@ class TradingBot:
 if __name__ == "__main__":
     bot = TradingBot()
     bot.run()
+

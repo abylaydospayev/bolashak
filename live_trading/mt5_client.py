@@ -1,4 +1,4 @@
-"""
+﻿"""
 MetaTrader5 client wrapper for live trading.
 
 Usage:
@@ -55,7 +55,7 @@ def init_mt5(terminal_path: str, login: int, password: str, server: str) -> bool
         print(f"Failed to initialize MT5: {last_error}")
         return False
 
-    print("✅ MT5 initialized")
+    print(" MT5 initialized")
     # Wait a moment for connection
     time.sleep(1)
     return True
@@ -66,7 +66,7 @@ def shutdown_mt5():
         return
     try:
         mt5.shutdown()
-        print("✅ MT5 shutdown")
+        print(" MT5 shutdown")
     except Exception as e:
         print(f"Error shutting down MT5: {e}")
 
@@ -163,7 +163,7 @@ def place_market_order(symbol: str, lot: float, sl: float = None, tp: float = No
         print(f"Order failed, retcode={result.retcode}, result={result}")
         return result
 
-    print(f"✅ Order placed: ticket={result.order}, volume={volume}, symbol={symbol}")
+    print(f" Order placed: ticket={result.order}, volume={volume}, symbol={symbol}")
     return result
 
 
@@ -214,3 +214,4 @@ def close_position_by_ticket(ticket: int):
 
 if __name__ == '__main__':
     print("mt5_client module loaded. Use functions from other scripts to operate MT5.")
+

@@ -1,4 +1,4 @@
-"""
+﻿"""
 USDJPY Demo Trading Bot - MT5 Live Execution with Advanced Risk Management
 
 Features:
@@ -85,7 +85,7 @@ def load_model_and_scaler():
         model = joblib.load(model_path)
         scaler = joblib.load(scaler_path) if scaler_path.exists() else None
         
-        log(f"✅ Loaded model: {model_path}")
+        log(f" Loaded model: {model_path}")
         return model, scaler
     
     except Exception as e:
@@ -224,10 +224,10 @@ def execute_trade(signal_type, current_price, risk_manager):
         if result is not None:
             # Update last trade time
             risk_manager.update_last_trade_time()
-            log(f"✅ {signal_type} executed: {LOT_SIZE} lots @ {current_price:.3f}, SL={sl_price:.3f}, TP={tp_price:.3f}")
+            log(f" {signal_type} executed: {LOT_SIZE} lots @ {current_price:.3f}, SL={sl_price:.3f}, TP={tp_price:.3f}")
             return True
         else:
-            log(f"❌ {signal_type} failed", 'ERROR')
+            log(f" {signal_type} failed", 'ERROR')
             return False
     
     except Exception as e:
@@ -243,11 +243,11 @@ def check_drawdown_limit(account_info, initial_balance):
     dd = (initial_balance - equity) / initial_balance if initial_balance > 0 else 0
     
     if dd > CONFIG['max_drawdown']:
-        log(f"⛔ EMERGENCY STOP: Drawdown {dd:.2%} exceeds limit {CONFIG['max_drawdown']:.2%}", 'CRITICAL')
+        log(f" EMERGENCY STOP: Drawdown {dd:.2%} exceeds limit {CONFIG['max_drawdown']:.2%}", 'CRITICAL')
         return False
     
     if dd > 0.05:
-        log(f"⚠️  WARNING: Drawdown at {dd:.2%}", 'WARNING')
+        log(f"  WARNING: Drawdown at {dd:.2%}", 'WARNING')
     
     return True
 
@@ -266,7 +266,7 @@ def main():
     
     # Initialize Risk Manager
     risk_manager = RiskManager()
-    log(f"✅ Risk Manager initialized:")
+    log(f" Risk Manager initialized:")
     log(f"   - Max positions: {risk_manager.max_positions}")
     log(f"   - Min interval: {risk_manager.min_interval}s")
     log(f"   - Stop loss: {risk_manager.stop_loss_pips} pips")
@@ -359,18 +359,18 @@ def main():
                 # Validate signal strength
                 if risk_manager.is_signal_strong(proba, signal_type):
                     signal = 1
-                    log(f"🔵 BUY SIGNAL: prob={proba:.3f}, H1 uptrend, STRONG")
+                    log(f" BUY SIGNAL: prob={proba:.3f}, H1 uptrend, STRONG")
                 else:
-                    log(f"⚪ BUY signal weak: prob={proba:.3f}, skipping")
+                    log(f" BUY signal weak: prob={proba:.3f}, skipping")
             
             elif proba <= risk_manager.sell_threshold and h1_trend == -1:
                 signal_type = 'SELL'
                 # Validate signal strength
                 if risk_manager.is_signal_strong(proba, signal_type):
                     signal = -1
-                    log(f"🔴 SELL SIGNAL: prob={proba:.3f}, H1 downtrend, STRONG")
+                    log(f" SELL SIGNAL: prob={proba:.3f}, H1 downtrend, STRONG")
                 else:
-                    log(f"⚪ SELL signal weak: prob={proba:.3f}, skipping")
+                    log(f" SELL signal weak: prob={proba:.3f}, skipping")
             
             # Execute if signal is strong enough
             if signal is not None and signal_type is not None:
@@ -384,7 +384,7 @@ def main():
             time.sleep(CONFIG['check_interval'])
     
     except KeyboardInterrupt:
-        log("\n⏹️  Bot stopped by user")
+        log("\n  Bot stopped by user")
     
     except Exception as e:
         log(f"Unexpected error: {e}", 'CRITICAL')
@@ -400,3 +400,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

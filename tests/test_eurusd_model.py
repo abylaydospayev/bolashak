@@ -1,4 +1,4 @@
-"""
+﻿"""
 EURUSD Model Testing Suite
 Tests data loading, feature engineering, model training and evaluation
 """
@@ -33,7 +33,7 @@ class TestEURUSDDataLoading:
         assert 'low' in df.columns, "Missing 'low' column"
         assert 'volume' in df.columns, "Missing 'volume' column"
         
-        print(f"\n✅ Loaded {len(df)} EURUSD bars")
+        print(f"\n Loaded {len(df)} EURUSD bars")
         print(f"   Date range: {df.index[0]} to {df.index[-1]}")
         print(f"   Price range: {df['close'].min():.5f} - {df['close'].max():.5f}")
     
@@ -59,7 +59,7 @@ class TestEURUSDDataLoading:
         outliers = (returns.abs() > 0.01).sum()
         print(f"\n   Found {outliers} potential outliers (>1% 15-min move)")
         
-        print("✅ EURUSD data quality checks passed")
+        print(" EURUSD data quality checks passed")
 
 
 class TestEURUSDFeatureEngineering:
@@ -87,7 +87,7 @@ class TestEURUSDFeatureEngineering:
         assert df_m15['rsi14'].max() <= 100
         assert df_m15['atr14'].min() >= 0
         
-        print(f"\n✅ Built base features for EURUSD")
+        print(f"\n Built base features for EURUSD")
         print(f"   RSI range: {df_m15['rsi14'].min():.1f} - {df_m15['rsi14'].max():.1f}")
         print(f"   ATR range: {df_m15['atr14'].min():.5f} - {df_m15['atr14'].max():.5f}")
     
@@ -107,7 +107,7 @@ class TestEURUSDFeatureEngineering:
         m30_features = [col for col in df_enhanced.columns if '_m30' in col]
         assert len(m30_features) > 0, "No M30 features added"
         
-        print(f"\n✅ Multi-timeframe features for EURUSD")
+        print(f"\n Multi-timeframe features for EURUSD")
         print(f"   M30 features added: {len(m30_features)}")
         print(f"   Sample features: {m30_features[:5]}")
 
@@ -139,7 +139,7 @@ class TestEURUSDPositionSizing:
         # Expected: $100k * 1% / (30 pips * $10/pip) = 3.33 lots
         expected = (equity * 0.01) / (stop_loss_pips * pip_value)
         
-        print(f"\n✅ EURUSD Position Sizing:")
+        print(f"\n EURUSD Position Sizing:")
         print(f"   Equity: ${equity:,.0f}")
         print(f"   Risk: 1%")
         print(f"   Stop Loss: {stop_loss_pips} pips")
@@ -166,7 +166,7 @@ class TestEURUSDPositionSizing:
         # Calculate risk
         dollar_risk = equity * 0.01
         
-        print(f"\n✅ FTMO EURUSD Position Sizing:")
+        print(f"\n FTMO EURUSD Position Sizing:")
         print(f"   Account: ${equity:,.2f}")
         print(f"   Max Risk per Trade: ${dollar_risk:.2f} (1%)")
         print(f"   Stop Loss: {stop_loss_pips} pips")
@@ -185,11 +185,11 @@ class TestEURUSDModel:
         model_path = Path('models/EURUSD_ensemble_oos.pkl')
         
         if not model_path.exists():
-            print("\n⚠️  EURUSD model not found. Need to train it first.")
+            print("\n  EURUSD model not found. Need to train it first.")
             print("   Run: python train_eurusd_model.py")
             pytest.skip("EURUSD model not trained yet")
         else:
-            print(f"\n✅ Found EURUSD model: {model_path}")
+            print(f"\n Found EURUSD model: {model_path}")
     
     def test_load_eurusd_model(self):
         """Test loading EURUSD model"""
@@ -202,7 +202,7 @@ class TestEURUSDModel:
         
         try:
             model = joblib.load(model_path)
-            print(f"\n✅ Loaded EURUSD model: {type(model).__name__}")
+            print(f"\n Loaded EURUSD model: {type(model).__name__}")
             
             # Check if model has required methods
             assert hasattr(model, 'predict'), "Model missing predict method"
@@ -253,7 +253,7 @@ class TestEURUSDModel:
             else:
                 probability = model.predict_proba(X)[0, 1]
             
-            print(f"\n✅ EURUSD Model Prediction:")
+            print(f"\n EURUSD Model Prediction:")
             print(f"   Latest Close: {df_clean['close'].iloc[-1]:.5f}")
             print(f"   Probability (UP): {probability:.3f}")
             
@@ -266,7 +266,7 @@ class TestEURUSDModel:
 def run_all_eurusd_tests():
     """Run all EURUSD tests"""
     print("\n" + "="*70)
-    print("🧪 RUNNING EURUSD MODEL TESTS")
+    print(" RUNNING EURUSD MODEL TESTS")
     print("="*70 + "\n")
     
     # Run tests
@@ -275,3 +275,4 @@ def run_all_eurusd_tests():
 
 if __name__ == "__main__":
     run_all_eurusd_tests()
+

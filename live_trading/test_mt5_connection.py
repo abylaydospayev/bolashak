@@ -1,4 +1,4 @@
-"""Test script to initialize MT5 and fetch bars.
+﻿"""Test script to initialize MT5 and fetch bars.
 
 Usage:
   1. Copy .env.example to .env
@@ -50,7 +50,7 @@ df = get_bars('USDJPY.sim', timeframe='M15', count=100)
 if df is None:
     print("Failed to fetch bars. Make sure USDJPY.sim is in Market Watch.")
 else:
-    print(f"✅ Retrieved {len(df)} bars")
+    print(f" Retrieved {len(df)} bars")
     print("\nLatest 5 bars:")
     print(df.tail())
 
@@ -60,3 +60,4 @@ print(info)
 
 shutdown_mt5()
 print('Done')
+

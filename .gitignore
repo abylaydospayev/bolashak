@@ -1,0 +1,74 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Trading
+live_trading/.env
+*.log
+
+# Data files
+data/*.csv
+!data/.gitkeep
+
+# Model files (too large for git)
+models/*.pkl
+models/*.h5
+!models/.gitkeep
+
+# Results
+results/*.png
+results/*.csv
+!results/.gitkeep
+
+# Jupyter
+.ipynb_checkpoints
+*.ipynb
+
+# System
+Thumbs.db
+.cache/
+
+# Azure
+.azure/
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*~
+
+# RDP files
+*.rdp

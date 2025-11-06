@@ -1,4 +1,4 @@
-"""
+﻿"""
 USDJPY Demo Trading Bot - MT5 Live Execution
 
 Loads validated ensemble model and executes trades on MT5 demo account.
@@ -106,7 +106,7 @@ def load_model_and_scaler():
         model = joblib.load(model_path)
         scaler = joblib.load(scaler_path) if scaler_path.exists() else None
         
-        log(f"✅ Loaded model: {model_path}")
+        log(f" Loaded model: {model_path}")
         return model, scaler
     
     except Exception as e:
@@ -295,10 +295,10 @@ def execute_trade(signal, current_price, atr, equity):
         )
         
         if result is not None:
-            log(f"✅ Trade executed: {signal} {abs(units):.2f} lots @ {current_price:.3f}, SL={sl_price:.3f}, TP={tp_price:.3f}")
+            log(f" Trade executed: {signal} {abs(units):.2f} lots @ {current_price:.3f}, SL={sl_price:.3f}, TP={tp_price:.3f}")
             return True
         else:
-            log(f"❌ Trade failed", 'ERROR')
+            log(f" Trade failed", 'ERROR')
             return False
     
     except Exception as e:
@@ -315,11 +315,11 @@ def check_risk_limits(account_info, initial_balance):
     dd = (initial_balance - equity) / initial_balance if initial_balance > 0 else 0
     
     if dd > RISK_LIMITS['max_drawdown_halt']:
-        log(f"⛔ EMERGENCY STOP: Drawdown {dd:.2%} exceeds limit {RISK_LIMITS['max_drawdown_halt']:.2%}", 'CRITICAL')
+        log(f" EMERGENCY STOP: Drawdown {dd:.2%} exceeds limit {RISK_LIMITS['max_drawdown_halt']:.2%}", 'CRITICAL')
         return False
     
     if dd > 0.05:
-        log(f"⚠️  WARNING: Drawdown at {dd:.2%}", 'WARNING')
+        log(f"  WARNING: Drawdown at {dd:.2%}", 'WARNING')
     
     return True
 
@@ -449,10 +449,10 @@ def main():
             signal = None
             if proba >= CONFIG['prob_buy'] and h1_trend == 1:
                 signal = 1  # BUY
-                log(f"🔵 BUY SIGNAL: prob={proba:.3f}, H1 uptrend")
+                log(f" BUY SIGNAL: prob={proba:.3f}, H1 uptrend")
             elif proba <= CONFIG['prob_sell'] and h1_trend == -1:
                 signal = -1  # SELL
-                log(f"🔴 SELL SIGNAL: prob={proba:.3f}, H1 downtrend")
+                log(f" SELL SIGNAL: prob={proba:.3f}, H1 downtrend")
             
             # Execute if signal
             if signal is not None:
@@ -467,7 +467,7 @@ def main():
             time.sleep(CONFIG['check_interval'])
     
     except KeyboardInterrupt:
-        log("\n⏹️  Bot stopped by user")
+        log("\n  Bot stopped by user")
     
     except Exception as e:
         log(f"Unexpected error: {e}", 'CRITICAL')
@@ -481,3 +481,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

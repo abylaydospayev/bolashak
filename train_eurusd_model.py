@@ -1,4 +1,4 @@
-"""
+﻿"""
 Train EURUSD Ensemble Model
 Matches the USDJPY training approach for consistency
 """
@@ -38,13 +38,13 @@ def train_eurusd_model():
     """Train EURUSD ensemble model (matches USDJPY approach)"""
     
     print("\n" + "="*70)
-    print("🚀 TRAINING EURUSD ENSEMBLE MODEL")
+    print(" TRAINING EURUSD ENSEMBLE MODEL")
     print("="*70 + "\n")
     
     symbol = 'EURUSD.sim'
     
     # 1. Load data
-    print(f"📊 Loading {symbol} data...")
+    print(f" Loading {symbol} data...")
     df_m15 = load_ohlcv(symbol, timeframe='M15')
     print(f"   M15: {len(df_m15)} bars ({df_m15.index[0]} to {df_m15.index[-1]})")
     
@@ -58,7 +58,7 @@ def train_eurusd_model():
     print(f"   H4: {len(df_h4)} bars")
     
     # 2. Build M15 base features
-    print("\n🔧 Building M15 base features...")
+    print("\n Building M15 base features...")
     df_m15['ema20'] = ema(df_m15['close'], 20)
     df_m15['ema50'] = ema(df_m15['close'], 50)
     df_m15['rsi14'] = rsi(df_m15['close'], 14)
@@ -82,13 +82,13 @@ def train_eurusd_model():
     print(f"   Created {len(df_m15.columns)} M15 features")
     
     # 3. Add multi-timeframe features
-    print("\n🔄 Adding multi-timeframe features...")
+    print("\n Adding multi-timeframe features...")
     df_enhanced = add_multi_timeframe_features(df_m15, df_m30, 'm30')
     df_enhanced = add_multi_timeframe_features(df_enhanced, df_h1, 'h1')
     df_enhanced = add_multi_timeframe_features(df_enhanced, df_h4, 'h4')
     
     # 4. Add market structure features
-    print("\n📊 Adding market structure features...")
+    print("\n Adding market structure features...")
     df_enhanced['higher_high'] = (df_enhanced['high'] > df_enhanced['high'].shift(1)).astype(int)
     df_enhanced['lower_low'] = (df_enhanced['low'] < df_enhanced['low'].shift(1)).astype(int)
     
@@ -101,7 +101,7 @@ def train_eurusd_model():
     print(f"   Total features: {len(df_enhanced.columns)}")
     
     # 5. Create target
-    print("\n🎯 Creating target variable...")
+    print("\n Creating target variable...")
     df_enhanced = create_target(df_enhanced, forward_bars=5, threshold_pips=10)
     
     # Drop NaN
@@ -129,14 +129,14 @@ def train_eurusd_model():
     missing_features = [col for col in feature_cols if col not in df_clean.columns]
     
     if missing_features:
-        print(f"\n⚠️  Missing features: {len(missing_features)}")
+        print(f"\n  Missing features: {len(missing_features)}")
         print(f"   Using {len(available_features)} available features")
         feature_cols = available_features
     
     X = df_clean[feature_cols]
     y = df_clean['target']
     
-    print(f"\n📈 Feature matrix shape: {X.shape}")
+    print(f"\n Feature matrix shape: {X.shape}")
     
     # 7. Train/test split (80/20, time-based)
     split_idx = int(len(X) * 0.8)
@@ -145,12 +145,12 @@ def train_eurusd_model():
     y_train = y.iloc[:split_idx]
     y_test = y.iloc[split_idx:]
     
-    print(f"\n✂️  Data split:")
+    print(f"\n  Data split:")
     print(f"   Training: {len(X_train)} samples ({X_train.index[0]} to {X_train.index[-1]})")
     print(f"   Testing: {len(X_test)} samples ({X_test.index[0]} to {X_test.index[-1]})")
     
     # 8. Train ensemble model
-    print("\n🤖 Training ensemble model...")
+    print("\n Training ensemble model...")
     print("   This may take a few minutes...")
     
     ensemble = EnsembleClassifier(
@@ -166,7 +166,7 @@ def train_eurusd_model():
     ensemble.fit(X_train, y_train)
     
     # 9. Evaluate on test set
-    print("\n📊 EVALUATION RESULTS (Out-of-Sample):")
+    print("\n EVALUATION RESULTS (Out-of-Sample):")
     print("="*70)
     
     # Predictions
@@ -175,25 +175,25 @@ def train_eurusd_model():
     
     # Accuracy
     accuracy = (y_pred == y_test).sum() / len(y_test)
-    print(f"\n✅ Accuracy: {accuracy:.4f} ({accuracy*100:.2f}%)")
+    print(f"\n Accuracy: {accuracy:.4f} ({accuracy*100:.2f}%)")
     
     # Win rate per class
     from sklearn.metrics import classification_report, confusion_matrix, roc_auc_score
     
-    print("\n📋 Classification Report:")
+    print("\n Classification Report:")
     print(classification_report(y_test, y_pred, target_names=['Down/Neutral', 'Up']))
     
     # ROC AUC
     try:
         roc_auc = roc_auc_score(y_test, y_proba)
-        print(f"✅ ROC AUC: {roc_auc:.4f}")
+        print(f" ROC AUC: {roc_auc:.4f}")
     except:
-        print("⚠️  Could not calculate ROC AUC")
+        print("  Could not calculate ROC AUC")
         roc_auc = None
     
     # Confusion matrix
     cm = confusion_matrix(y_test, y_pred)
-    print("\n🔢 Confusion Matrix:")
+    print("\n Confusion Matrix:")
     print(f"              Predicted")
     print(f"              Down   Up")
     print(f"Actual Down   {cm[0,0]:5d}  {cm[0,1]:5d}")
@@ -203,16 +203,16 @@ def train_eurusd_model():
     up_predictions = y_pred == 1
     if up_predictions.sum() > 0:
         win_rate_up = (y_test[up_predictions] == 1).sum() / up_predictions.sum()
-        print(f"\n💹 Win Rate (when predicting UP): {win_rate_up:.4f} ({win_rate_up*100:.2f}%)")
+        print(f"\n Win Rate (when predicting UP): {win_rate_up:.4f} ({win_rate_up*100:.2f}%)")
     
     # Win rate when model predicts DOWN
     down_predictions = y_pred == 0
     if down_predictions.sum() > 0:
         win_rate_down = (y_test[down_predictions] == 0).sum() / down_predictions.sum()
-        print(f"💹 Win Rate (when predicting DOWN): {win_rate_down:.4f} ({win_rate_down*100:.2f}%)")
+        print(f" Win Rate (when predicting DOWN): {win_rate_down:.4f} ({win_rate_down*100:.2f}%)")
     
     # 10. Feature importance
-    print("\n🎯 Top 10 Most Important Features:")
+    print("\n Top 10 Most Important Features:")
     feature_importance = ensemble.get_feature_importance()
     if feature_importance is not None:
         feature_imp_df = pd.DataFrame({
@@ -224,18 +224,18 @@ def train_eurusd_model():
             print(f"   {row['feature']:30s} {row['importance']:.4f}")
     
     # 11. Save model
-    print("\n💾 Saving model...")
+    print("\n Saving model...")
     Path('models').mkdir(exist_ok=True)
     
     model_path = f'models/EURUSD_ensemble_oos.pkl'
     joblib.dump(ensemble, model_path)
-    print(f"   ✅ Saved: {model_path}")
+    print(f"    Saved: {model_path}")
     
     # Save feature list
     feature_file = 'models/EURUSD_features.txt'
     with open(feature_file, 'w') as f:
         f.write('\n'.join(feature_cols))
-    print(f"   ✅ Saved: {feature_file}")
+    print(f"    Saved: {feature_file}")
     
     # Save results summary
     results_file = 'models/EURUSD_ensemble_results.txt'
@@ -255,26 +255,27 @@ def train_eurusd_model():
         if down_predictions.sum() > 0:
             f.write(f"Win Rate (DOWN): {win_rate_down:.4f} ({win_rate_down*100:.2f}%)\n")
     
-    print(f"   ✅ Saved: {results_file}")
+    print(f"    Saved: {results_file}")
     
     print("\n" + "="*70)
-    print("✅ EURUSD MODEL TRAINING COMPLETE!")
+    print(" EURUSD MODEL TRAINING COMPLETE!")
     print("="*70 + "\n")
     
-    print(f"🎉 Final Results:")
+    print(f" Final Results:")
     print(f"   Accuracy: {accuracy:.4f} ({accuracy*100:.2f}%)")
     if roc_auc:
         print(f"   ROC AUC: {roc_auc:.4f}")
     if up_predictions.sum() > 0:
         print(f"   Win Rate (UP): {win_rate_up:.4f} ({win_rate_up*100:.2f}%)")
-    print(f"\n✅ Model saved and ready for live trading!")
+    print(f"\n Model saved and ready for live trading!")
     
     return ensemble, accuracy, roc_auc if roc_auc else 0
 
 if __name__ == "__main__":
     model, acc, auc = train_eurusd_model()
     
-    print(f"\n📈 Next Steps:")
+    print(f"\n Next Steps:")
     print(f"   1. Run tests: pytest tests/test_eurusd_model.py -v")
     print(f"   2. Update bot to use EURUSD model")
     print(f"   3. Test on demo account before live trading")
+

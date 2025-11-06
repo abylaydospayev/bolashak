@@ -1,4 +1,4 @@
-"""
+﻿"""
 Risk Manager Module for Live Trading
 Provides comprehensive risk management controls
 """
@@ -35,7 +35,7 @@ class RiskManager:
         self.daily_loss = 0.0
         self.last_reset_date = datetime.now().date()
         
-        print(f"✅ Risk Manager initialized:")
+        print(f" Risk Manager initialized:")
         print(f"   Max Positions: {self.max_positions}")
         print(f"   Min Interval: {self.min_interval}s")
         print(f"   Stop Loss: {self.stop_loss_pips} pips")
@@ -49,7 +49,7 @@ class RiskManager:
         
         # Check 1: Daily loss limit
         if self.daily_loss >= self.max_daily_loss:
-            print(f"❌ Daily loss limit reached: ${self.daily_loss:.2f} / ${self.max_daily_loss}")
+            print(f" Daily loss limit reached: ${self.daily_loss:.2f} / ${self.max_daily_loss}")
             return False
         
         # Check 2: Max positions
@@ -59,7 +59,7 @@ class RiskManager:
             positions = 0
             
         if positions >= self.max_positions:
-            print(f"⚠️ Max positions ({self.max_positions}) reached. Current: {positions}")
+            print(f" Max positions ({self.max_positions}) reached. Current: {positions}")
             return False
         
         # Check 3: Time interval
@@ -67,7 +67,7 @@ class RiskManager:
         time_since_last = current_time - self.last_trade_time
         if self.last_trade_time > 0 and time_since_last < self.min_interval:
             remaining = int(self.min_interval - time_since_last)
-            print(f"⏳ Wait {remaining}s before next trade (min interval: {self.min_interval}s)")
+            print(f" Wait {remaining}s before next trade (min interval: {self.min_interval}s)")
             return False
         
         return True
@@ -80,13 +80,13 @@ class RiskManager:
         """Record trade result for daily tracking"""
         if profit < 0:
             self.daily_loss += abs(profit)
-            print(f"📉 Daily loss updated: ${self.daily_loss:.2f} / ${self.max_daily_loss}")
+            print(f" Daily loss updated: ${self.daily_loss:.2f} / ${self.max_daily_loss}")
     
     def _reset_daily_if_needed(self):
         """Reset daily counters at midnight"""
         today = datetime.now().date()
         if today > self.last_reset_date:
-            print(f"🔄 Resetting daily counters (new day: {today})")
+            print(f" Resetting daily counters (new day: {today})")
             self.daily_loss = 0.0
             self.last_reset_date = today
     
@@ -103,7 +103,7 @@ class RiskManager:
         
         # Additional check: probability should be significantly different from 0.5
         if diff < self.min_prob_diff:
-            print(f"⚠️ Signal too weak (diff: {diff:.3f} < {self.min_prob_diff})")
+            print(f" Signal too weak (diff: {diff:.3f} < {self.min_prob_diff})")
             return False
         
         return is_strong
@@ -134,7 +134,7 @@ class RiskManager:
         if not positions:
             return "No open positions"
         
-        summary = f"\n📊 Open Positions: {len(positions)}"
+        summary = f"\n Open Positions: {len(positions)}"
         total_profit = 0.0
         
         for pos in positions:
@@ -142,5 +142,6 @@ class RiskManager:
             type_str = "BUY" if pos.type == 0 else "SELL"
             summary += f"\n   {type_str} {pos.volume} lots @ {pos.price_open} | P/L: ${pos.profit:.2f}"
         
-        summary += f"\n💰 Total P/L: ${total_profit:.2f}"
+        summary += f"\n Total P/L: ${total_profit:.2f}"
         return summary
+

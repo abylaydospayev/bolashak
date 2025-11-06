@@ -1,0 +1,2 @@
+symbol,config,n_simulations,n_trades,mean_pnl,median_pnl,ci_95_lower,ci_95_upper,mean_max_dd_pct,dd_95_percentile,prob_profit,risk_of_ruin
+EURUSD,sl1.5_tp2.5,10000,1244,208127.4140802254,208127.4140802254,208127.4140802247,208127.4140802261,0.5003925072640446,0.7256896893146658,100.0,0.0

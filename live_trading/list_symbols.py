@@ -1,4 +1,4 @@
-"""List all available symbols in MT5 terminal."""
+﻿"""List all available symbols in MT5 terminal."""
 import os
 import sys
 from pathlib import Path
@@ -25,7 +25,7 @@ if not ok:
     print(f"Failed to initialize MT5: {mt5.last_error()}")
     exit(1)
 
-print("✅ MT5 initialized\n")
+print(" MT5 initialized\n")
 
 # Get all symbols
 symbols = mt5.symbols_get()
@@ -53,17 +53,18 @@ else:
     print("=" * 60)
     usdjpy_variants = [s for s in forex_pairs if 'USD' in s.upper() and 'JPY' in s.upper()]
     if usdjpy_variants:
-        print(f"✅ Found {len(usdjpy_variants)} USDJPY variant(s):")
+        print(f" Found {len(usdjpy_variants)} USDJPY variant(s):")
         for v in usdjpy_variants:
-            print(f"  ➜ {v}")
+            print(f"   {v}")
         print(f"\nUse this in your .env file: MT5_SYMBOL={usdjpy_variants[0]}")
     else:
-        print("❌ No USDJPY variants found")
+        print(" No USDJPY variants found")
         print("\nTroubleshooting:")
         print("1. Open MT5 terminal")
         print("2. Press Ctrl+U to open 'Symbols'")
         print("3. Search for 'USDJPY' or 'USD/JPY'")
-        print("4. Right-click → 'Show in Market Watch'")
+        print("4. Right-click  'Show in Market Watch'")
         print("5. Note the exact symbol name and update .env file")
 
 mt5.shutdown()
+

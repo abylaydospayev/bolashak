@@ -1,4 +1,4 @@
-"""
+﻿"""
 Detailed Analysis of USDJPY Model Predictions
 Understand prediction distribution and behavior
 """
@@ -212,7 +212,7 @@ def analyze_predictions(model, X, y, df_clean):
     
     plt.tight_layout()
     plt.savefig('results/USDJPY_prediction_analysis.png', dpi=300, bbox_inches='tight')
-    print(f"\n✅ Saved: results/USDJPY_prediction_analysis.png")
+    print(f"\n Saved: results/USDJPY_prediction_analysis.png")
     
     # Feature importance (if available)
     if hasattr(model, 'feature_importances_'):
@@ -229,19 +229,19 @@ def analyze_predictions(model, X, y, df_clean):
 
 def main():
     print("\n" + "="*70)
-    print("🔍 USDJPY MODEL PREDICTION ANALYSIS")
+    print(" USDJPY MODEL PREDICTION ANALYSIS")
     print("="*70)
     
     # Load model
-    print("\n📦 Loading model...")
+    print("\n Loading model...")
     model = joblib.load('models/USDJPY_ensemble_oos.pkl')
     
     # Load data
-    print("\n📊 Loading data...")
+    print("\n Loading data...")
     df_m15, df_m30, df_h1, df_h4 = load_usdjpy_data()
     
     # Build features
-    print("\n🔧 Building features...")
+    print("\n Building features...")
     df_features = build_features(df_m15, df_m30, df_h1, df_h4)
     df_features = create_target(df_features)
     df_clean = df_features.dropna()
@@ -264,8 +264,9 @@ def main():
     analyze_predictions(model, X, y, df_clean)
     
     print("\n" + "="*70)
-    print("✅ ANALYSIS COMPLETE!")
+    print(" ANALYSIS COMPLETE!")
     print("="*70)
 
 if __name__ == "__main__":
     main()
+
