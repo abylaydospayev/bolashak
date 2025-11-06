@@ -1,0 +1,13 @@
+{
+  "symbol": "USDJPY.sim",
+  "rf_weight": 0.0,
+  "lstm_weight": 1.0,
+  "val_auc": 0.5577280861216838,
+  "test_auc": 0.5789138772663878,
+  "test_acc": 0.6203814064362336,
+  "rf_model": "models\\USDJPY.sim_rf.pkl",
+  "lstm_model": "models\\USDJPY.sim_lstm_best.keras",
+  "rf_scaler": "models\\scaler.pkl",
+  "lstm_scaler": "models\\USDJPY.sim_lstm_scaler.pkl",
+  "lookback": 60
+}

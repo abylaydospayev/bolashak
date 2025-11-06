@@ -1,0 +1,109 @@
+================================================================================
+HOW TO GET YOUR OANDA API TOKEN (5 MINUTES)
+================================================================================
+
+Your OANDA login credentials:
+  Username: 1600037272
+  Password: 8?p1?$$*kW3
+  Server: OANDA-Demo-1
+
+⚠️ IMPORTANT: The password above is for logging into the web platform.
+              For API trading, you need a separate "Personal Access Token"
+
+================================================================================
+STEP-BY-STEP GUIDE
+================================================================================
+
+STEP 1: Login to OANDA Demo
+----------------------------
+URL: https://www.oanda.com/demo-account/login
+
+Enter:
+  - Username: 1600037272
+  - Password: 8?p1?$$*kW3
+
+Click "Login"
+
+
+STEP 2: Navigate to API Settings
+---------------------------------
+After logging in, look for one of these menu options:
+  
+  Option A: Account Menu → "Manage API Access"
+  Option B: Account Menu → "Settings" → "API Access"  
+  Option C: Direct URL: https://www1.oanda.com/account/api-access
+
+Click on it.
+
+
+STEP 3: Generate Personal Access Token
+---------------------------------------
+You should see a page titled "Personal Access Tokens" or "API Access"
+
+Click the button: "Generate Token" or "Create Token"
+
+A long string will appear (looks like this):
+  Example: "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0..."
+
+⚠️ CRITICAL: Copy this token IMMEDIATELY!
+           You will NOT be able to see it again!
+           
+Click "Copy" and save it somewhere safe.
+
+
+STEP 4: Update Configuration File
+----------------------------------
+Once you have the token, run this command in PowerShell:
+
+  $env:OANDA_API_TOKEN = "paste_your_token_here"
+
+Replace "paste_your_token_here" with your actual token.
+
+OR edit the file manually:
+  File: live_trading\oanda_config.py
+  Line 18: Replace 'PLEASE_GENERATE_TOKEN_FROM_OANDA_DASHBOARD'
+           with your actual token (keep the quotes!)
+
+
+STEP 5: Test Connection
+------------------------
+Run:
+  .\.venv\Scripts\python.exe live_trading\oanda_client.py
+
+If successful, you should see:
+  ✅ ALL TESTS PASSED - OANDA CONNECTION READY
+
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+Problem: "Can't find API settings"
+Solution: Try these URLs after logging in:
+  - https://www1.oanda.com/account/api-access
+  - https://www.oanda.com/demo-account/api
+  - Look in Account → My Services → fxTrade Practice
+
+Problem: "401 Unauthorized"  
+Solution: Token is wrong or expired, generate a new one
+
+Problem: "400 Bad Request"
+Solution: Check account ID is correct (1600037272)
+
+================================================================================
+QUICK METHOD (If you're stuck)
+================================================================================
+
+If you can't find the API settings in the web interface:
+
+1. Contact OANDA Support:
+   Email: api@oanda.com
+   Chat: Available on their website
+   
+   Say: "I need to generate an API token for my demo account #1600037272"
+
+2. They'll send you instructions or generate it for you
+
+================================================================================
+
+Once you have the token, paste it here and I'll update the config for you! 🔑

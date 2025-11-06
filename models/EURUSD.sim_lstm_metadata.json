@@ -1,0 +1,29 @@
+{
+  "symbol": "EURUSD.sim",
+  "lookback": 60,
+  "n_features": 14,
+  "feature_cols": [
+    "open",
+    "high",
+    "low",
+    "close",
+    "volume",
+    "ema20",
+    "ema50",
+    "rsi14",
+    "atr14",
+    "ema50_slope",
+    "sin_hour",
+    "cos_hour",
+    "ret1",
+    "atr_pct"
+  ],
+  "lstm_units": 64,
+  "dropout": 0.2,
+  "train_auc": 0.6375636414532561,
+  "val_auc": 0.6091172680412371,
+  "test_auc": 0.5923367534712541,
+  "train_acc": 0.6117530127966206,
+  "val_acc": 0.6704410011918951,
+  "test_acc": 0.5792610250297974
+}

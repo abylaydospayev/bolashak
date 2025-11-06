@@ -1,0 +1,10 @@
+ENSEMBLE MODEL RESULTS
+============================================================
+
+symbol              : USDJPY
+n_features          : 30
+n_train             : 39876
+n_test              : 9970
+test_auc            : 0.7863696675201614
+test_accuracy       : 0.8719157472417252
+enhanced_features   : True

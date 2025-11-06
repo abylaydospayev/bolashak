@@ -1,0 +1,31 @@
+
+# General settings
+timeframe: M15            # MT5 timeframe
+horizon: 3                # bars ahead for label
+lookback: 60              # for live feature context (and later RNN)
+initial_balance: 100000   # starting equity (USD)
+risk_per_trade_pct: 0.4   # % of equity (legacy, replaced by position sizing)
+stop_atr_mult: 1.5        # SL = 1.5 * ATR (OPTIMIZED - wider stops reduce premature exits)
+tp_atr_mult: 2.5          # TP = 2.5 * ATR (OPTIMIZED - better R:R, captures bigger moves)
+prob_buy: 0.80            # long threshold (ultra high confidence only)
+prob_sell: 0.20           # short threshold (ultra high confidence only)
+min_atr_pct: 0.0002       # ATR% lower bound (e.g., 0.02% for FX ~ scaled)
+max_atr_pct: 0.0120       # ATR% upper bound
+
+# Costs (approx; adjust to your broker)
+# NOTE: EURUSD typically has tighter spreads than USDJPY
+spread_pips: 0.6          # typical spread: EURUSD ~0.6 pips, USDJPY ~0.8 pips
+commission_per_lot: 7.0   # USD per round-turn standard lot (both sides)
+slippage_pips: 0.3        # assumed slippage in pips per fill
+
+# Live execution
+magic: 424242             # MT5 magic number
+deviation_points: 10      # max deviation
+min_lot: 0.01             # default lot (final size capped by risk calc)
+max_lot: 2.00
+
+# Files
+data_dir: data
+feature_dir: features
+model_dir: models
+log_dir: logs

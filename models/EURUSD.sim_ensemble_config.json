@@ -1,0 +1,13 @@
+{
+  "symbol": "EURUSD.sim",
+  "rf_weight": 0.4,
+  "lstm_weight": 0.6,
+  "val_auc": 0.6185152798232696,
+  "test_auc": 0.6024229074889869,
+  "test_acc": 0.6597139451728248,
+  "rf_model": "models\\EURUSD.sim_rf.pkl",
+  "lstm_model": "models\\EURUSD.sim_lstm_best.keras",
+  "rf_scaler": "models\\scaler.pkl",
+  "lstm_scaler": "models\\EURUSD.sim_lstm_scaler.pkl",
+  "lookback": 60
+}

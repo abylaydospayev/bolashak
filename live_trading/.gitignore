@@ -1,0 +1,15 @@
+# Ignore credentials and logs
+.env
+*.log
+logs/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# IDE
+.vscode/
+.idea/
+*.swp
