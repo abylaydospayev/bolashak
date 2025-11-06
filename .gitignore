@@ -39,6 +39,15 @@ env/
 live_trading/.env
 *.log
 
+# Credentials (NEVER commit these!)
+*credentials*
+*password*
+*.rdp
+*_vm_*.txt
+.env
+.env.*
+!.env.example
+
 # Data files
 data/*.csv
 !data/.gitkeep
