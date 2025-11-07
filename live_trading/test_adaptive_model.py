@@ -21,8 +21,15 @@ import json
 # Add parent directory to path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from live_trading.adaptive_model import AdaptiveModel
-from live_trading.mt5_functions import initialize_mt5
+from adaptive_model import AdaptiveModel
+
+
+def initialize_mt5():
+    """Initialize MT5 connection"""
+    if not mt5.initialize():
+        print(f"[ERROR] MT5 initialization failed: {mt5.last_error()}")
+        return False
+    return True
 
 
 class AdaptiveModelTester:

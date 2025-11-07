@@ -26,6 +26,10 @@ try:
     TORCH_AVAILABLE = True
 except ImportError:
     TORCH_AVAILABLE = False
+    # Create dummy nn for class definition
+    class nn:
+        class Module:
+            pass
     print("[WARNING] PyTorch not available - LSTM disabled")
 
 # ML models
