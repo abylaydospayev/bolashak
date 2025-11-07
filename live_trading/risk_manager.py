@@ -16,6 +16,7 @@ class RiskManager:
         
         # Position limits
         self.max_positions = int(os.getenv('MAX_POSITIONS', 3))
+        self.lot_size = float(os.getenv('MT5_LOT_SIZE', 0.5))
         self.min_interval = int(os.getenv('MIN_INTERVAL_SECONDS', 300))
         
         # Stop loss & take profit
@@ -37,6 +38,7 @@ class RiskManager:
         
         print(f" Risk Manager initialized:")
         print(f"   Max Positions: {self.max_positions}")
+        print(f"   Lot Size: {self.lot_size}")
         print(f"   Min Interval: {self.min_interval}s")
         print(f"   Stop Loss: {self.stop_loss_pips} pips")
         print(f"   Take Profit: {self.take_profit_pips} pips")
@@ -67,7 +69,7 @@ class RiskManager:
             total_volume = 0.0
         
         # In netting mode, check total volume instead of position count
-        max_volume = self.max_positions * 0.5  # max_positions * lot_size
+        max_volume = self.max_positions * self.lot_size  # max_positions * lot_size
         if total_volume >= max_volume:
             print(f" Max volume ({max_volume} lots) reached. Current: {total_volume} lots in {positions_count} position(s)")
             return False
