@@ -52,16 +52,26 @@ class RiskManager:
             print(f" Daily loss limit reached: ${self.daily_loss:.2f} / ${self.max_daily_loss}")
             return False
         
-        # Check 2: Max positions
+        # Check 2: Max positions (check TOTAL VOLUME in netting mode)
         try:
-            positions = mt5.positions_total()
+            positions = mt5.positions_get()
+            if positions is None:
+                positions_count = 0
+                total_volume = 0.0
+            else:
+                positions_count = len(positions)
+                # Calculate total volume across all positions
+                total_volume = sum(pos.volume for pos in positions)
         except:
-            positions = 0
-            
-        if positions >= self.max_positions:
-            print(f" Max positions ({self.max_positions}) reached. Current: {positions}")
-            return False
+            positions_count = 0
+            total_volume = 0.0
         
+        # In netting mode, check total volume instead of position count
+        max_volume = self.max_positions * 0.5  # max_positions * lot_size
+        if total_volume >= max_volume:
+            print(f" Max volume ({max_volume} lots) reached. Current: {total_volume} lots in {positions_count} position(s)")
+            return False
+            
         # Check 3: Time interval
         current_time = time.time()
         time_since_last = current_time - self.last_trade_time
