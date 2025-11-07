@@ -110,12 +110,13 @@ def get_bars(symbol: str, timeframe: str = 'M15', count: int = 500):
     return df
 
 
-def place_market_order(symbol: str, lot: float, sl: float = None, tp: float = None, deviation: int = 20):
+def place_market_order(symbol: str, lot: float, order_type: int = 0, sl: float = None, tp: float = None, deviation: int = 20):
     """Place a market order.
 
     Parameters:
     - symbol: e.g., 'USDJPY'
     - lot: number of lots (0.01, 0.1, 1.0)
+    - order_type: 0 for BUY, 1 for SELL
     - sl/tp: absolute price levels (not pips)
     - deviation: maximum slippage in points
     """
@@ -132,7 +133,15 @@ def place_market_order(symbol: str, lot: float, sl: float = None, tp: float = No
         mt5.symbol_select(symbol, True)
 
     point = symbol_info.point
-    price = mt5.symbol_info_tick(symbol).ask
+    tick = mt5.symbol_info_tick(symbol)
+    
+    # Use ask for BUY, bid for SELL
+    if order_type == 0:  # BUY
+        price = tick.ask
+        mt5_order_type = mt5.ORDER_TYPE_BUY
+    else:  # SELL
+        price = tick.bid
+        mt5_order_type = mt5.ORDER_TYPE_SELL
 
     # units in lots need to be converted to volume (volume field in lots)
     volume = float(lot)
@@ -141,12 +150,12 @@ def place_market_order(symbol: str, lot: float, sl: float = None, tp: float = No
         "action": mt5.TRADE_ACTION_DEAL,
         "symbol": symbol,
         "volume": volume,
-        "type": mt5.ORDER_TYPE_BUY,
+        "type": mt5_order_type,
         "price": price,
         "deviation": deviation,
         "magic": 424242,
         "comment": "python_mt5_order",
-        "type_filling": mt5.ORDER_FILLING_IOC,
+        "type_filling": mt5.ORDER_FILLING_FOK,  # Changed to FOK for OANDA
     }
 
     if sl is not None:

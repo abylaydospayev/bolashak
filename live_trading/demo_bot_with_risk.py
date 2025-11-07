@@ -15,7 +15,7 @@ Features:
 - Comprehensive logging
 
 Usage:
-    python live_trading\demo_bot_with_risk.py
+    python live_trading\\demo_bot_with_risk.py
 """
 import os
 import sys
