@@ -187,22 +187,20 @@ def get_prediction(model, scaler, df, feature_cols):
 
 
 def check_h1_trend_filter(df):
-    """Check H1 trend direction."""
-    if 'ema20_h1' not in df.columns or 'ema50_h1' not in df.columns:
-        return 0
+    """DEPRECATED: H1 trend filter removed - trading purely on ML model predictions.
     
-    latest = df.iloc[-1]
-    if latest['ema20_h1'] > latest['ema50_h1']:
-        return 1  # Uptrend
-    elif latest['ema20_h1'] < latest['ema50_h1']:
-        return -1  # Downtrend
-    return 0
+    This function is kept for backward compatibility but always returns 0.
+    The bot now trades based solely on model probability thresholds without
+    requiring H1 trend confirmation.
+    """
+    return 0  # Always neutral - no H1 filtering
 
 
 def execute_trade(signal_type, current_price, risk_manager):
-    """Execute trade on MT5 with risk management."""
+    """Execute trade on MT5 with ATR-based risk management."""
     try:
-        # Calculate SL/TP using risk manager
+        # Get ATR-adjusted lot size and SL/TP
+        lot_size = risk_manager.get_lot_size()
         sl_price, tp_price = risk_manager.calculate_sl_tp(current_price, signal_type)
         
         # Determine direction
@@ -211,10 +209,16 @@ def execute_trade(signal_type, current_price, risk_manager):
         else:
             order_type = 1  # Sell
         
+        log(f"📍 Executing {signal_type}:")
+        log(f"   Entry: {current_price:.3f}")
+        log(f"   SL: {sl_price:.3f} ({risk_manager.current_sl_pips}p)")
+        log(f"   TP: {tp_price:.3f} ({risk_manager.current_tp_pips}p)")
+        log(f"   Size: {lot_size} lots (ATR-adjusted)")
+        
         # Place order
         result = place_market_order(
             symbol=SYMBOL,
-            lot=LOT_SIZE,
+            lot=lot_size,
             order_type=order_type,
             sl=sl_price,
             tp=tp_price,
@@ -224,10 +228,10 @@ def execute_trade(signal_type, current_price, risk_manager):
         if result is not None:
             # Update last trade time
             risk_manager.update_last_trade_time()
-            log(f" {signal_type} executed: {LOT_SIZE} lots @ {current_price:.3f}, SL={sl_price:.3f}, TP={tp_price:.3f}")
+            log(f"✅ {signal_type} executed: {lot_size} lots @ {current_price:.3f}")
             return True
         else:
-            log(f" {signal_type} failed", 'ERROR')
+            log(f"❌ {signal_type} failed", 'ERROR')
             return False
     
     except Exception as e:
@@ -333,44 +337,61 @@ def main():
             latest_row = df.iloc[-1]
             proba = get_prediction(model, scaler, df, feature_cols)
             
-            # Check H1 trend
-            h1_trend = check_h1_trend_filter(df)
-            
             # Get position summary from risk manager
             import MetaTrader5 as mt5
             position_summary = risk_manager.get_position_summary(mt5)
             open_count = len(mt5.positions_get(symbol=SYMBOL)) if mt5.positions_get(symbol=SYMBOL) else 0
             
-            log(f"[{iteration}] Price: {latest_row['close']:.3f}, Prob: {proba:.3f}, H1: {h1_trend}, Pos: {open_count}")
+            # Get current ATR for logging (if available)
+            atr_str = f", ATR: {risk_manager.current_atr:.1f}p" if risk_manager.current_atr else ""
+            log(f"[{iteration}] Price: {latest_row['close']:.3f}, Prob: {proba:.3f}, Pos: {open_count}{atr_str}")
             if iteration % 10 == 0:  # Log position summary every 10 iterations
                 log(position_summary)
             
-            # Check if we can trade (risk management gate)
-            if not risk_manager.can_open_trade(mt5):
+            # Get account info for ATR calculation
+            account_info = mt5.account_info()
+            if account_info is None:
+                log("Failed to get account info", 'WARNING')
                 time.sleep(CONFIG['check_interval'])
                 continue
             
-            # Generate signal
+            balance = account_info.balance
+            
+            # === ATR-BASED VOLATILITY ADJUSTMENT ===
+            vol_result = risk_manager.adjust_for_volatility(balance, SYMBOL)
+            if vol_result is None:
+                log("🚨 Extreme volatility detected - skipping new trades", 'WARNING')
+                time.sleep(CONFIG['check_interval'])
+                continue
+            
+            lot_size, sl_pips, tp_pips, atr_pips, vol_factor = vol_result
+            
+            # Check if we can trade (risk management gate)
+            if not risk_manager.can_open_trade(mt5, balance):
+                time.sleep(CONFIG['check_interval'])
+                continue
+            
+            # === GENERATE SIGNAL (NO H1 FILTER) ===
             signal = None
             signal_type = None
             
-            if proba >= risk_manager.buy_threshold and h1_trend == 1:
+            if proba >= risk_manager.buy_threshold:
                 signal_type = 'BUY'
                 # Validate signal strength
                 if risk_manager.is_signal_strong(proba, signal_type):
                     signal = 1
-                    log(f" BUY SIGNAL: prob={proba:.3f}, H1 uptrend, STRONG")
+                    log(f"✅ BUY SIGNAL: prob={proba:.3f}, STRONG (no H1 filter)")
                 else:
-                    log(f" BUY signal weak: prob={proba:.3f}, skipping")
+                    log(f"⚠️ BUY signal weak: prob={proba:.3f}, skipping")
             
-            elif proba <= risk_manager.sell_threshold and h1_trend == -1:
+            elif proba <= risk_manager.sell_threshold:
                 signal_type = 'SELL'
                 # Validate signal strength
                 if risk_manager.is_signal_strong(proba, signal_type):
                     signal = -1
-                    log(f" SELL SIGNAL: prob={proba:.3f}, H1 downtrend, STRONG")
+                    log(f"✅ SELL SIGNAL: prob={proba:.3f}, STRONG (no H1 filter)")
                 else:
-                    log(f" SELL signal weak: prob={proba:.3f}, skipping")
+                    log(f"⚠️ SELL signal weak: prob={proba:.3f}, skipping")
             
             # Execute if signal is strong enough
             if signal is not None and signal_type is not None:
