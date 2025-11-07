@@ -209,7 +209,7 @@ def execute_trade(signal_type, current_price, risk_manager):
         else:
             order_type = 1  # Sell
         
-        log(f"📍 Executing {signal_type}:")
+        log(f"[TRADE] Executing {signal_type}:")
         log(f"   Entry: {current_price:.3f}")
         log(f"   SL: {sl_price:.3f} ({risk_manager.current_sl_pips}p)")
         log(f"   TP: {tp_price:.3f} ({risk_manager.current_tp_pips}p)")
@@ -228,10 +228,10 @@ def execute_trade(signal_type, current_price, risk_manager):
         if result is not None:
             # Update last trade time
             risk_manager.update_last_trade_time()
-            log(f"✅ {signal_type} executed: {lot_size} lots @ {current_price:.3f}")
+            log(f"[SUCCESS] {signal_type} executed: {lot_size} lots @ {current_price:.3f}")
             return True
         else:
-            log(f"❌ {signal_type} failed", 'ERROR')
+            log(f"[FAILED] {signal_type} failed", 'ERROR')
             return False
     
     except Exception as e:
@@ -360,7 +360,7 @@ def main():
             # === ATR-BASED VOLATILITY ADJUSTMENT ===
             vol_result = risk_manager.adjust_for_volatility(balance, SYMBOL)
             if vol_result is None:
-                log("🚨 Extreme volatility detected - skipping new trades", 'WARNING')
+                log("[ALERT] Extreme volatility detected - skipping new trades", 'WARNING')
                 time.sleep(CONFIG['check_interval'])
                 continue
             
@@ -380,18 +380,18 @@ def main():
                 # Validate signal strength
                 if risk_manager.is_signal_strong(proba, signal_type):
                     signal = 1
-                    log(f"✅ BUY SIGNAL: prob={proba:.3f}, STRONG (no H1 filter)")
+                    log(f"[BUY] BUY SIGNAL: prob={proba:.3f}, STRONG (no H1 filter)")
                 else:
-                    log(f"⚠️ BUY signal weak: prob={proba:.3f}, skipping")
+                    log(f"[WEAK] BUY signal weak: prob={proba:.3f}, skipping")
             
             elif proba <= risk_manager.sell_threshold:
                 signal_type = 'SELL'
                 # Validate signal strength
                 if risk_manager.is_signal_strong(proba, signal_type):
                     signal = -1
-                    log(f"✅ SELL SIGNAL: prob={proba:.3f}, STRONG (no H1 filter)")
+                    log(f"[SELL] SELL SIGNAL: prob={proba:.3f}, STRONG (no H1 filter)")
                 else:
-                    log(f"⚠️ SELL signal weak: prob={proba:.3f}, skipping")
+                    log(f"[WEAK] SELL signal weak: prob={proba:.3f}, skipping")
             
             # Execute if signal is strong enough
             if signal is not None and signal_type is not None:

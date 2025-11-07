@@ -60,15 +60,15 @@ class RiskManager:
         self.current_tp_pips = self.atr_baseline_pips * self.risk_reward_ratio
         self.current_lot_size = None
         
-        print(f"⚙️ Risk Manager initialized:")
-        print(f"   ATR-Based Volatility: {'✅ Enabled' if self.atr_enabled else '❌ Disabled'}")
+        print(f"[RISK] Risk Manager initialized:")
+        print(f"   ATR-Based Volatility: {'[ENABLED]' if self.atr_enabled else '[DISABLED]'}")
         if self.atr_enabled:
             print(f"   ATR Period: {self.atr_period}")
             print(f"   ATR Baseline: {self.atr_baseline_pips} pips")
-            print(f"   SL Range: {self.min_sl_pips}–{self.max_sl_pips} pips")
+            print(f"   SL Range: {self.min_sl_pips}-{self.max_sl_pips} pips")
             print(f"   Risk:Reward Ratio: 1:{self.risk_reward_ratio}")
             print(f"   Risk per Trade: {self.risk_percent_per_trade}%")
-            print(f"   Lot Range: {self.min_lot_size}–{self.max_lot_size}")
+            print(f"   Lot Range: {self.min_lot_size}-{self.max_lot_size}")
             print(f"   Max Total Lots: {self.max_total_lots}")
         print(f"   Max Positions: {self.max_positions}")
         print(f"   Min Interval: {self.min_interval}s")
@@ -114,7 +114,7 @@ class RiskManager:
             return round(atr_pips, 2)
             
         except Exception as e:
-            print(f"⚠️ ATR calculation failed: {e}")
+            print(f"[WARNING] ATR calculation failed: {e}")
             return None
     
     def adjust_for_volatility(self, account_balance, symbol='USDJPY'):
@@ -146,7 +146,7 @@ class RiskManager:
         # Calculate current ATR
         atr_pips = self.calculate_atr(symbol, mt5.TIMEFRAME_H1, self.atr_period)
         if atr_pips is None:
-            print("⚠️ Using baseline values (ATR unavailable)")
+            print("[WARNING] Using baseline values (ATR unavailable)")
             atr_pips = self.atr_baseline_pips
         
         # Calculate volatility factor
@@ -172,14 +172,14 @@ class RiskManager:
         
         # === 4) EXTREME VOLATILITY PROTECTION ===
         if vol_factor >= self.extreme_vol_factor:
-            print(f"🚨 EXTREME VOLATILITY: ATR {atr_pips:.1f} pips ({vol_factor:.2f}x baseline)")
+            print(f"[ALERT] EXTREME VOLATILITY: ATR {atr_pips:.1f} pips ({vol_factor:.2f}x baseline)")
             print(f"   Skipping new trades until volatility normalizes")
             return None
         
         # High volatility: reduce size by 50%
         if vol_factor >= self.high_vol_factor:
             lot_size = max(self.min_lot_size, round(lot_size * 0.5, 2))
-            print(f"⚠️ HIGH VOLATILITY: ATR {atr_pips:.1f} pips ({vol_factor:.2f}x) - Halving position size")
+            print(f"[WARNING] HIGH VOLATILITY: ATR {atr_pips:.1f} pips ({vol_factor:.2f}x) - Halving position size")
         
         # Store current state
         self.current_atr = atr_pips
@@ -188,12 +188,12 @@ class RiskManager:
         self.current_lot_size = lot_size
         
         # Print volatility report
-        vol_status = "🟢 LOW" if vol_factor < 1.2 else "🟡 NORMAL" if vol_factor < 1.8 else "🔴 HIGH"
-        print(f"📊 Volatility Analysis:")
+        vol_status = "[LOW]" if vol_factor < 1.2 else "[NORMAL]" if vol_factor < 1.8 else "[HIGH]"
+        print(f"[VOL] Volatility Analysis:")
         print(f"   Status: {vol_status} | ATR: {atr_pips:.1f} pips (factor: {vol_factor:.2f}x)")
-        print(f"   🛑 Stop Loss: {sl_pips} pips")
-        print(f"   🎯 Take Profit: {tp_pips} pips (R:R = 1:{tp_pips/sl_pips:.2f})")
-        print(f"   💼 Position Size: {lot_size} lots (risk: ${risk_dollars:.2f} = {self.risk_percent_per_trade}%)")
+        print(f"   Stop Loss: {sl_pips} pips")
+        print(f"   Take Profit: {tp_pips} pips (R:R = 1:{tp_pips/sl_pips:.2f})")
+        print(f"   Position Size: {lot_size} lots (risk: ${risk_dollars:.2f} = {self.risk_percent_per_trade}%)")
         
         return lot_size, sl_pips, tp_pips, atr_pips, vol_factor
     
@@ -217,13 +217,13 @@ class RiskManager:
         # === 1) DAILY LOSS CHECKS ===
         # Hard stop: max daily loss in dollars
         if self.daily_loss >= self.max_daily_loss:
-            print(f"⛔ HARD STOP: Daily loss limit ${self.daily_loss:.2f} / ${self.max_daily_loss}")
+            print(f"[STOP] HARD STOP: Daily loss limit ${self.daily_loss:.2f} / ${self.max_daily_loss}")
             return False
         
         # Soft stop: max daily loss as % of balance
         daily_loss_pct = (self.daily_loss / account_balance) * 100.0
         if daily_loss_pct >= self.daily_loss_soft_stop_pct:
-            print(f"⛔ SOFT STOP: Daily loss {daily_loss_pct:.2f}% ≥ {self.daily_loss_soft_stop_pct}%")
+            print(f"[STOP] SOFT STOP: Daily loss {daily_loss_pct:.2f}% >= {self.daily_loss_soft_stop_pct}%")
             print(f"   Pausing new trades to protect capital")
             return False
         
@@ -242,12 +242,12 @@ class RiskManager:
         
         # Check max positions
         if positions_count >= self.max_positions:
-            print(f"⛔ Max positions ({self.max_positions}) reached")
+            print(f"[STOP] Max positions ({self.max_positions}) reached")
             return False
         
         # Check total volume across all positions
         if total_volume >= self.max_total_lots:
-            print(f"⛔ Max total volume ({self.max_total_lots} lots) reached. Current: {total_volume:.2f}")
+            print(f"[STOP] Max total volume ({self.max_total_lots} lots) reached. Current: {total_volume:.2f}")
             return False
         
         # === 3) TIME INTERVAL CHECK ===
@@ -255,7 +255,7 @@ class RiskManager:
         time_since_last = current_time - self.last_trade_time
         if self.last_trade_time > 0 and time_since_last < self.min_interval:
             remaining = int(self.min_interval - time_since_last)
-            print(f"⏳ Wait {remaining}s before next trade (min spacing: {self.min_interval}s)")
+            print(f"[WAIT] Wait {remaining}s before next trade (min spacing: {self.min_interval}s)")
             return False
         
         return True
@@ -268,13 +268,13 @@ class RiskManager:
         """Record trade result for daily tracking"""
         if profit < 0:
             self.daily_loss += abs(profit)
-            print(f"📉 Daily loss updated: ${self.daily_loss:.2f} / ${self.max_daily_loss}")
+            print(f"[LOSS] Daily loss updated: ${self.daily_loss:.2f} / ${self.max_daily_loss}")
     
     def _reset_daily_if_needed(self):
         """Reset daily counters at midnight"""
         today = datetime.now().date()
         if today > self.last_reset_date:
-            print(f"🔄 Resetting daily counters (new day: {today})")
+            print(f"[RESET] Resetting daily counters (new day: {today})")
             self.daily_loss = 0.0
             self.last_reset_date = today
     
@@ -291,7 +291,7 @@ class RiskManager:
         
         # Additional check: probability should be significantly different from 0.5
         if diff < self.min_prob_diff:
-            print(f"⚠️ Signal too weak (diff: {diff:.3f} < {self.min_prob_diff})")
+            print(f"[WARNING] Signal too weak (diff: {diff:.3f} < {self.min_prob_diff})")
             return False
         
         return is_strong
@@ -331,7 +331,7 @@ class RiskManager:
         if not positions:
             return "No open positions"
         
-        summary = f"\n📊 Open Positions: {len(positions)}"
+        summary = f"\n[POS] Open Positions: {len(positions)}"
         total_profit = 0.0
         total_volume = 0.0
         
@@ -341,7 +341,7 @@ class RiskManager:
             type_str = "BUY" if pos.type == 0 else "SELL"
             summary += f"\n   {type_str} {pos.volume} lots @ {pos.price_open} | P/L: ${pos.profit:.2f}"
         
-        summary += f"\n💰 Total P/L: ${total_profit:.2f}"
-        summary += f"\n📦 Total Volume: {total_volume:.2f} / {self.max_total_lots} lots"
+        summary += f"\n[P/L] Total P/L: ${total_profit:.2f}"
+        summary += f"\n[VOL] Total Volume: {total_volume:.2f} / {self.max_total_lots} lots"
         return summary
 
