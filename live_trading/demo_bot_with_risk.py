@@ -268,16 +268,8 @@ def main():
         log("Failed to load model. Exiting.", 'CRITICAL')
         return
     
-    # Initialize Risk Manager
+    # Initialize Risk Manager (already prints its own initialization)
     risk_manager = RiskManager()
-    log(f" Risk Manager initialized:")
-    log(f"   - Max positions: {risk_manager.max_positions}")
-    log(f"   - Min interval: {risk_manager.min_interval}s")
-    log(f"   - Stop loss: {risk_manager.stop_loss_pips} pips")
-    log(f"   - Take profit: {risk_manager.take_profit_pips} pips")
-    log(f"   - Max daily loss: ${risk_manager.max_daily_loss}")
-    log(f"   - Buy threshold: {risk_manager.buy_threshold}")
-    log(f"   - Sell threshold: {risk_manager.sell_threshold}")
     
     # Initialize MT5
     log(f"Connecting to MT5: {SERVER}")
