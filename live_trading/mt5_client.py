@@ -213,7 +213,7 @@ def close_position_by_ticket(ticket: int):
         "deviation": 20,
         "magic": 424242,
         "comment": "python_mt5_close",
-        "type_filling": mt5.ORDER_FILLING_IOC,
+        "type_filling": mt5.ORDER_FILLING_FOK,  # Changed from IOC to FOK for OANDA
     }
 
     result = mt5.order_send(request)
